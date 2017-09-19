@@ -49,7 +49,33 @@ module.exports = function(app, db) {
         }));
         console.log(user);
     });
-    
+
+    app.post('/Update' , (req, res) => {
+        var newInfo = req.body      // Такое себе.
+        console.log(newInfo)
+        var key = {'login' : req.body.login , 'date' : new Date(req.body.date)}
+        db.collection('cards').updateOne(key , newInfo, (err , result) => {
+            if(err){
+                return console.log(err)
+            }
+            res.send(result);
+        })
+    })
+
+    app.post('/GetAllCards', (req, res) => {
+        var whatToFind = {'login' : req.body.login};
+        console.log(whatToFind);
+        db.collection('cards').find()
+        var mass = db.collection('cards').find({}).toArray((err, result) => {
+            if(err){
+                return console.log(err);
+            }
+            console.log(result);
+            
+            res.send(result)
+        });
+    })
+
     app.post('/Remove' , (req , res) => {
         var login = req.body.login;
         var date = new Date(req.body.date);
@@ -78,20 +104,21 @@ module.exports = function(app, db) {
     var find = function(whatFind)
     {
         var result;
-        result = db.collection('cards').findOne(whatFind , function(err, res) {
+        db.collection('cards').findOne(whatFind , function(err, res , result) {
             if(err){ 
                 return console.log(err);
-            }
-            
-            console.log('FIND FUNC ' + res);
-            return res;
+            }          
+            console.log('FIND FUNC ' + res.owner);
+            result = res;
+            console.log('in result ' + result.owner);
+            return result;
         });
-        console.log(result);
-        return result;
+        console.log("in func : " + result);
+
     }
-    
+
     app.post('/Ask' , (req , res) => {
-        var whatToFind ={'login' : req.body.login , 'date' : req.body.date};
+        var whatToFind ={'login' : req.body.login , 'date' : new Date(req.body.date)};
         console.log(whatToFind);
         console.log("find " + find(whatToFind));
     })
