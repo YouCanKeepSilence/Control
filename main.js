@@ -19,7 +19,8 @@ const express        = require('express');
 const MongoClient    = require('mongodb').MongoClient;
 const bodyParser     = require('body-parser');
 const app            = express();
-const url = 'mongodb://localhost:27017/test';
+const url = 'mongodb://localhost:27017/card';
+app.use(bodyParser.urlencoded( {extended : true} ));
 
 MongoClient.connect(url, (err,db) => {
     if (err) {
