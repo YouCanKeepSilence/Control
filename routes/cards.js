@@ -1,3 +1,15 @@
+/*
+    API declaration : 
+    '/:xxx' - means that you need to attach info in format ('api/card/MY_INFO')
+    GET('api/cards/:login') - get all cards drom DB for login
+    GET('api/card/:id) - get ONE card from DB by id
+    GET('api/card) - get card from DB by login and date (need to attach this info in body of request 'login' and 'date')
+    POST('api/card') - add new card to DB , you need attach all card info into body of request
+    PUT('api/card') - update card into DB info by login and date . which must be attach to body of request (new info must be attched too)
+    PUT('api/card/:id') - do the same thing but find card by id, you also need to attach new info in body of request
+    DELETE('api/card') - delete card from DB by login and date , you need attach it to body of request
+    DELETE('api/card/:id') - delete card from DB by id
+*/
 var express = require('express');
 var router = express.Router();
 var MongoDb = require('mongodb')
