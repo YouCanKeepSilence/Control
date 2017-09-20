@@ -20,14 +20,6 @@ app.engine('html', require('ejs').renderFile);
 
 app.use(express.static(path.join(__dirname, 'client')));
 
-//app.use(bodyParser.json());
-//app.use(bodyParser.urlencoded({extended: false}));
-// MongoClient.connect(url, (err,db) => {
-//     if (err) {
-//         return console.log(err);
-//     }
-    //require('./routes')(app,db);
-    app.listen(port ,() => {
-        console.log('Legion never sleep');
-    });
-//});
+app.listen(port ,() => {
+    console.log('Legion never sleep');
+});
