@@ -9,20 +9,7 @@ module.exports = function(app, db) {
            }
            console.log(result.ops);
             }));
-
-
-    app.get('/ziga' , (req,res) => {
-        var details = { 'name' : 'Jerry', 'nation' : 'nigga' };
-        var collection = db.collection("users");
-        res.send(collection.insertOne(details, function(err, result){
-            
-           if(err){ 
-               return console.log(err);
-           }
-           console.log(result.ops);
-            }))});
-    });
-
+        });
 
     app.get('/Tom' , (req,res) => {
         var details = { 'name' : 'Tom'};
@@ -65,14 +52,13 @@ module.exports = function(app, db) {
     app.post('/GetAllCards', (req, res) => {
         var whatToFind = {'login' : req.body.login};
         console.log(whatToFind);
-        db.collection('cards').find()
-        var mass = db.collection('cards').find({}).toArray((err, result) => {
+        db.collection('cards').find(whatToFind).toArray((err, result) => {
             if(err){
                 return console.log(err);
             }
             console.log(result);
             
-            res.send(result)
+            res.json(result)
         });
     })
 
