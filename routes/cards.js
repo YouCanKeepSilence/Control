@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var MongoDb = require('mongodb')
-// connect to database;
+// Connect to database;
 var MongoClient    = require('mongodb').MongoClient;
 var ObjectID = require('mongodb').ObjectID;
 var url = 'mongodb://localhost:27017/card';
@@ -14,8 +14,8 @@ var db = MongoClient.connect(url , (err , res) => {
     console.log('Legion always watch');
 });
 
-// get all cards for this login
-router.get('/GetAllCards/:login', (req, res) => {
+// Get all cards for this login
+router.get('/cards/:login', (req, res) => {
     var whatToFind = {'login' : req.params.login};
     console.log(whatToFind);
     db.collection('cards').find(whatToFind).toArray((err, result) => {
@@ -26,32 +26,8 @@ router.get('/GetAllCards/:login', (req, res) => {
     });
 })
 
-// remove card for this date and login
-router.delete('/Remove' , (req , res) => {
-    var login = req.body.login;
-    var date = new Date(req.body.date);
-    
-    var whatToRemove = {'login' : login , 'date' : date};
-    console.log(whatToRemove);
-    db.collection('cards').deleteOne(whatToRemove , function(err , result){
-        if(err){ 
-            res.json(err);
-        }    
-        res.json(result);
-    });
-})
-// remove by id
-router.delete('/Remove/:id' , (req , res) => {
-    db.collection('cards').deleteOne({_id : ObjectID(req.params.id)} , (err , result) => {
-        if(err){
-            res.json(err)
-        }
-        res.json(result)
-    })
-})
-
-// Add function.
-router.post('/Add' , (req , res) => {
+// Add card function.
+router.post('/card' , (req , res) => {
     var whatToAdd = req.body;
     whatToAdd.date = new Date(whatToAdd.date);
     db.collection('cards').insertOne(whatToAdd , (err, result) => {
@@ -61,9 +37,18 @@ router.post('/Add' , (req , res) => {
         res.json(result);
     })
 })
-
-// Update function. WARNING : Full replace ALL fields of component
-router.put('/Update' , (req , res) => {
+//Get card by login and date
+router.get('/card' , (req , res) => {
+    var whatToGet = {'login' : req.body.login , 'date' : new Date(req.body.date)}
+    db.collection('cards').findOne(whatToGet , (err , result) => {
+        if(err){
+            res.json(err)
+        }
+        res.json(result);
+    })
+})
+// Update function by login and date. WARNING : Full replace ALL fields of component
+router.put('/card' , (req , res) => {
     var newInfo = req.body      // Такое себе.
     newInfo.date = new Date(req.body.date);
     var key = {'login' : newInfo.login , 'date' : newInfo.date}
@@ -75,13 +60,50 @@ router.put('/Update' , (req , res) => {
     })
 })
 
-router.get('/GetCard/:id' , (req , res) => {
+// Remove card for this date and login
+router.delete('/card' , (req , res) => {
+    var login = req.body.login;
+    var date = new Date(req.body.date);
+    var whatToRemove = {'login' : login , 'date' : date};
+    db.collection('cards').deleteOne(whatToRemove , function(err , result){
+        if(err){ 
+            res.json(err);
+        }    
+        res.json(result);
+    });
+})
+
+//----------------------------------------------------------------------
+
+//Get card by id
+router.get('/card/:id' , (req , res) => {
     var idForGet = ObjectID(req.params.id);
     db.collection('cards').findOne({_id : idForGet} , (err , result) => {
         if(err){
             res.json(err)
         }
         res.json(result);
+    })
+})
+// Update card by id
+router.put('/card/:id' , (req , res) => {
+    var newInfo = req.body      // Такое себе.
+    newInfo.date = new Date(req.body.date);
+    db.collection('cards').updateOne({_id : ObjectID(req.params.id)} , newInfo, (err , result) => {
+        if(err){
+            res.json(err)
+        }
+        res.json(result);
+    })
+})
+
+// Remove by id
+router.delete('/card/:id' , (req , res) => {
+    db.collection('cards').deleteOne({_id : ObjectID(req.params.id)} , (err , result) => {
+        if(err){
+            res.json(err)
+        }
+        res.json(result)
     })
 })
 module.exports = router;
