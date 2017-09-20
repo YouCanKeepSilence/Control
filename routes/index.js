@@ -1,5 +1,12 @@
-const noteRoutes = require('./control_routes');
+/*const cardsRoutes = require('./control_routes');
 module.exports = function(app, db) {
-  noteRoutes(app, db);
-  // Тут, позже, будут и другие обработчики маршрутов 
-};
+  cardsRoutes(app, db);
+};*/
+var express = require('express');
+var router = express.Router();
+
+router.get('/', function(req, res, next){
+    res.render('index.html');
+});
+
+module.exports = router;
