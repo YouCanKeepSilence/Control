@@ -44,7 +44,6 @@ router.post('/card' , (req , res) => {
     var whatToAdd = req.body;
     console.log(req.body.works)
     whatToAdd.works = JSON.parse(req.body.works)
-    
     whatToAdd.date = new Date(whatToAdd.date);
     db.collection('cards').insertOne(whatToAdd , (err, result) => {
         if(err){
@@ -85,6 +84,7 @@ router.delete('/card' , (req , res) => {
         if(err){ 
             res.json(err);
         }    
+        res.setHeader('Access-Control-Allow-Origin','*') 
         res.json(result);
     });
 })
@@ -119,6 +119,7 @@ router.delete('/card/:id' , (req , res) => {
         if(err){
             res.json(err)
         }
+        res.setHeader('Access-Control-Allow-Origin','*') 
         res.json(result)
     })
 })
