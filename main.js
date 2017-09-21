@@ -4,16 +4,13 @@ var path           = require('path');
 var bodyParser     = require('body-parser');
 var app            = express();
 
-var index          = require('./routes/index')
-var cards          = require('./routes/cards')
-var cors           = require('./routes/cors');
+var cards          = require(path.join(__dirname,'/routes/cards'))
+var cors           = require(path.join(__dirname,'routes/cors'))
 var port = 8080;
 app.use(bodyParser.urlencoded( {extended : true} ));
 
 app.use('/api', cards);
 
-//view 
-app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.engine('html', require('ejs').renderFile);
 
@@ -27,5 +24,5 @@ app.listen(port ,() => {
 app.use(cors.permission)
 
 app.get('*', function(req, res) {
-    res.sendFile(path.join(__dirname, 'views' ,'index.html')); 
+    res.sendFile(path.join(__dirname,'index.html')); 
   });
