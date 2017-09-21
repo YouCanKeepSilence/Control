@@ -1,0 +1,7 @@
+<h3>Users:</h3>
+  <ul>
+    <li *ngFor="let card of cards" (click) = "onSelect(card)">
+      <button type="button" class="btn btn-primary">Primary</button><br>
+      {{card.date}}
+    </li>
+  </ul>
