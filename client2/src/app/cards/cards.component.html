@@ -1,0 +1,12 @@
+<h3>Your cards!</h3> 
+<ul>
+  <li *ngFor = "let card of cards; let i = index">
+    {{card.owner}}
+    <ol>
+      <li *ngFor = "let work of cards[i].works">
+        {{work.title}}
+        {{work.time}}
+      </li>
+    </ol>
+  </li>
+</ul>
