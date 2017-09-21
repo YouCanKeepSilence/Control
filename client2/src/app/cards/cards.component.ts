@@ -15,6 +15,7 @@ export class CardsComponent implements OnInit {
 
   ngOnInit() {
     this.cards = this._cardServece.getCards(this._login);
+    console.log(this.cards);
     /*this.cards = [
     {
         login : 'Demigod',

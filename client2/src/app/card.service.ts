@@ -11,7 +11,10 @@ export class CardService {
 
   getCards(login: string) {
     console.log('get all cards');
-    return this.http.get('api/cards/' + login).
-      map(res => res.json());
+    return this.http.get('localhost:8080/api/cards/' + login).
+      map(res => {
+        console.log(res);
+        res.json();
+      });
   }
 }
