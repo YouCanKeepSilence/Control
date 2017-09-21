@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {CardService} from '../card.service';
+import { Http, Response } from '@angular/http';
 
 @Component({
   selector: 'app-cards',
@@ -14,8 +15,10 @@ export class CardsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.cards = this._cardServece.getCards(this._login);
-    console.log(this.cards);
+    this._cardServece.getCards(this._login).subscribe(data => {
+      this.cards = data;
+      console.log(data);
+    });
     /*this.cards = [
     {
         login : 'Demigod',

@@ -34,6 +34,7 @@ router.get('/cards/:login', (req, res) => {
         if(err){
             res.json(err);
         }
+        res.setHeader('Access-Control-Allow-Origin','*') 
         res.json(result)
     });
 })
