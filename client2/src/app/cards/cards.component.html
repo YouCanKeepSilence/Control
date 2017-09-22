@@ -2,6 +2,7 @@
 <ul>
   <li *ngFor = "let card of cards; let i = index">
     {{card.owner}}
+    <br>
     {{card.date}}
       <input type="button" (click)="deleteCard(card._id)" value="Delete" class="btn btn-danger">
     <ol>
