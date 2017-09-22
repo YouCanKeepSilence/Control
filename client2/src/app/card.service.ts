@@ -11,9 +11,9 @@ export class CardService {
 
   getCards(login) {
     console.log('get all cards for login ' + login);
-    const headers = new Headers();
+    // const headers = new Headers();
     const AskUrl = 'http://localhost:8080/api/cards/' + login;
-    return this.http.get(AskUrl, {'headers' : headers}).map((res: Response) => res.json());
+    return this.http.get(AskUrl/*, {'headers' : headers}*/).map((res: Response) => res.json());
   }
 
   deleteCard(id) {
@@ -24,5 +24,10 @@ export class CardService {
   updateCard(card) {
     console.log('new info is ' + card);
     return this.http.put(this.apiUrl + '/' + card._id , JSON.stringify(card)).map((res: Response) => res.json());
+  }
+
+  addCard(card) {
+    console.log('new card is ' + card);
+    return this.http.post(this.apiUrl , JSON.stringify(card)).map((res: Response) => res.json());
   }
 }

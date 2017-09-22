@@ -20,9 +20,11 @@ export class CardsComponent {
   deleteCard(id) {
     this._cardServece.deleteCard(id).subscribe(data => {
       console.log(data);
-      for (let i = 0; i < this.cards.length; i++) {
-        if (id === this.cards[i]._id) {
-          this.cards.splice( i , 1);
+      if (data.n === 1) {
+        for (let i = 0; i < this.cards.length; i++) {
+          if (id === this.cards[i]._id) {
+            this.cards.splice( i , 1);
+          }
         }
       }
     });
@@ -30,5 +32,14 @@ export class CardsComponent {
 
   updateCard(card) {
     // this._cardServece;
+  }
+
+  addCard(card) {
+    this._cardServece.addCard(card).subscribe(data => {
+      if (data.n === 1) {
+        console.log('Card added');
+        this.cards.push(card);
+      }
+    });
   }
 }
