@@ -89,7 +89,7 @@ export class WorklistComponent implements OnInit {
         this.cardForPopUp = this.cards[index];
     }
 
-    getSummaryTime(index) {
+    getSummaryTime(index: number): number {
       let sum = 0;
       this.cards[index].works.forEach(element => {
         sum += element.time;
@@ -97,8 +97,21 @@ export class WorklistComponent implements OnInit {
       return sum;
     }
 
-    deleteCard() {
-      console.log('qwe');
+    deleteCard(index: number): void {
+      this.worklistService.deleteCard(this.cards[index]._id).subscribe(data => {
+        console.log(data);
+        if (data.n === 1) {
+          this.cards.splice(index , 1);
+        }
+      });
+    }
+
+    deleteWork(index: number): void {
+      this.cardForPopUp.works.splice(index);
+    }
+
+    addWork(): void {
+      this.cardForPopUp.works.push(new Work('', null));
     }
 }
 
