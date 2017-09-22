@@ -36,8 +36,9 @@ export class CardsComponent {
 
   addCard(card) {
     this._cardServece.addCard(card).subscribe(data => {
-      if (data.n === 1) {
+      if (data.result.n === 1) {
         console.log('Card added');
+        card._id = data.id;
         this.cards.push(card);
       }
     });

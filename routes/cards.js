@@ -42,14 +42,18 @@ router.get('/cards/:login', (req, res) => {
 // Add card function.
 router.post('/card' , (req , res) => {
     var whatToAdd = req.body;
-    console.log(req.body.works)
+    // console.log(req.body.works)
     whatToAdd.works = JSON.parse(req.body.works)
     whatToAdd.date = new Date(whatToAdd.date);
     db.collection('cards').insertOne(whatToAdd , (err, result) => {
         if(err){
             res.json(err)
         }
-        res.json(result);
+        //console.log(whatToAdd);
+        var answer ={'result' : result , 'id' :  whatToAdd._id};
+        // result['id'] = whatToAdd._id;
+        // console.log(result.id);
+        res.json(answer);
     })
 })
 //Get card by login and date
