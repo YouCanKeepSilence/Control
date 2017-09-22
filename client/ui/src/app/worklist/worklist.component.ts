@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { WorklistService } from '../worklist.service';
 import { Http, Response } from '@angular/http';
 
+import {NgGrid, NgGridItem, NgGridConfig, NgGridItemConfig, NgGridItemEvent} from 'angular2-grid';
+
 @Component({
   selector: 'app-worklist',
   templateUrl: './worklist.component.html',
@@ -11,8 +13,23 @@ import { Http, Response } from '@angular/http';
 export class WorklistComponent implements OnInit {
     public cards: Card[] = CARDS;
     public cardForPopUp: Card = this.cards[0];
+    public elementsInRow = 3;
+    public configs: NgGridItemConfig[] = [];
 
-    constructor(private worklistService: WorklistService) {}
+    constructor(private worklistService: WorklistService) {
+      for (let i = 0; i < this.cards.length; i++) {
+        this.configs.push(this.generateItemConfig(i));
+      }
+    }
+
+    generateItemConfig(element: number): NgGridItemConfig {
+      let column = element % this.elementsInRow;
+      let row = (element - column) / this.elementsInRow;
+      column++;
+      row++;
+      console.log(row, column);
+      return { 'dragHandle': '.handle', 'col': column, 'row': row, 'sizex': 1, 'sizey': 1 };
+    }
 
     ngOnInit() {}
 

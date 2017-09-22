@@ -4,6 +4,8 @@ import { AppComponent } from './app.component';
 import { WorklistComponent } from './worklist/worklist.component';
 import { HttpModule } from '@angular/http';
 
+import { NgGridModule } from 'angular2-grid';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -11,7 +13,8 @@ import { HttpModule } from '@angular/http';
   ],
   imports: [
     BrowserModule,
-    HttpModule
+    HttpModule,
+    NgGridModule
   ],
   providers: [],
   bootstrap: [AppComponent]
