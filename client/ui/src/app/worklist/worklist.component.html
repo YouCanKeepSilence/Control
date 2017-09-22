@@ -2,43 +2,48 @@
 <div class="container">
   <div class="form-group" align="center">
     <label for="usr">Login:</label>
-    <input type="text" class="form-control" id="usr">
+    <input #login type="text" class="form-control" (keyup.enter)="updateList(login.value)">
+    <button type="button" class="btn btn-primary" (click)="updateList(login.value)" >Primary</button>
   </div>
+</div>
 
-
-  <div class="list-group">
-    <a align="center" href="#" class="list-group-item" *ngFor="let card of cards; let i = index" (click)="updatePopUp(i)" data-toggle="modal" data-target="#popUp">
-      <h4 class="list-group-item-heading">{{card.id}}</h4>
-      <p class="list-group-item-text">List Group Item Text</p>
-    </a>
-  </div>
+<div [ngGrid]="tableConfig">
+    <div *ngFor="let card of cards; let i = index" [(ngGridItem)]="configs[i]">
+        <a align="center" href="#" class="list-group-item" (click)="updatePopUp(i)" data-toggle="modal" data-target="#popUp">
+            <button type="button" class="close" (click)="deleteCard(i)" onclick="event.stopPropagation();"><font color="red">&times;</font></button>
+            <h4 class="list-group-item-heading">{{card.date.getDate()}}.{{card.date.getMonth() + 1}}.{{card.date.getFullYear()}}</h4>
+            <p class="list-group-item-text">Summary time: {{getSummaryTime(i)}}</p>
+        </a>
+    </div>
 </div>
 
 <div class="container">
-
-  <!-- Modal -->
-  <div class="modal fade" id="popUp" role="document">
-    <div class="modal-dialog">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h3 class="modal-title">{{cardForPopUp.date.getDate()}}.{{cardForPopUp.date.getMonth() + 1}}.{{cardForPopUp.date.getFullYear()}}</h3>
-          <h5>Владелец: {{cardForPopUp.owner}}</h5>
-        </div>
-        <div class="modal-body">
-            <a href="#" class="list-group-item" *ngFor="let work of cardForPopUp.works">
-              <p>{{work[0]}}</p>
-              <input type="text" class="form-control" id="usr" value={{work[1]}}>
-            </a>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    <!-- Modal -->
+    <div class="modal fade" id="popUp" role="document">
+      <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h3 align="center" class="modal-title">{{cardForPopUp.date.getDate()}}.{{cardForPopUp.date.getMonth() + 1}}.{{cardForPopUp.date.getFullYear()}}</h3>
+            <h5 align="center">Владелец: {{cardForPopUp.owner}}</h5>
+          </div>
+          <div class="modal-body">
+              <a href="#" class="list-group-item" *ngFor="let work of cardForPopUp.works; let i = index">
+                Work:<input type="text" class="form-control" value={{work.title}}>
+                Time:<input type="text" class="form-control" value={{work.time}}>
+                <br>
+                <div align="right">
+                  <button type="button" class="btn btn-danger" (click)="deleteWork(i)">Delete</button>
+                </div>
+              </a>
+              <br>
+              <button type="button" class="btn btn-primary btn-block" (click)="addWork()">+</button>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-success" (click)="qwe()" data-dismiss="modal">Apply</button>
+          </div>
         </div>
       </div>
-      
     </div>
   </div>
-  
-</div>

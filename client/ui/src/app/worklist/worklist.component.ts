@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { WorklistService } from '../worklist.service';
+import { Http, Response } from '@angular/http';
+
+import {NgGrid, NgGridItem, NgGridConfig, NgGridItemConfig, NgGridItemEvent} from 'angular2-grid';
 
 @Component({
   selector: 'app-worklist',
@@ -9,30 +13,139 @@ import { Component, OnInit } from '@angular/core';
 export class WorklistComponent implements OnInit {
     public cards: Card[] = CARDS;
     public cardForPopUp: Card = this.cards[0];
+    public elementsInRow = 3;
+    public configs: NgGridItemConfig[] = [];
+    public tableConfig: NgGridConfig = <NgGridConfig>{
+      'margins': [10],
+      'draggable': false,
+      'resizable': true,
+      'max_cols': 3,
+      'max_rows': 10000,
+      'visible_cols': 0,
+      'visible_rows': 0,
+      'min_cols': 1,
+      'min_rows': 1,
+      'col_width': 50,
+      'row_height': 50,
+      'cascade': 'up',
+      'min_width': 50,
+      'min_height': 50,
+      'fix_to_grid': false,
+      'auto_style': true,
+      'auto_resize': true,
+      'maintain_ratio': false,
+      'prefer_new': false,
+      'zoom_on_drag': false,
+      'limit_to_screen': true
+    };
 
-    constructor() { }
+    constructor(private worklistService: WorklistService) {
+      for (let i = 0; i < this.cards.length; i++) {
+        this.configs.push(this.generateItemConfig(i));
+      }
+    }
 
-    ngOnInit() {
+    generateItemConfig(element: number): NgGridItemConfig {
+      let column = element % this.elementsInRow;
+      let row = (element - column) / this.elementsInRow;
+      column++;
+      row++;
+      return {
+          'col': column,
+          'row': row,
+          'sizex': 1,
+          'sizey': 1,
+          'dragHandle': null,
+          'resizeHandle': null,
+          'borderSize': 15,
+          'fixed': false,
+          'draggable': true,
+          'resizable': true,
+          'payload': null,
+          'maxCols': 0,
+          'minCols': 0,
+          'maxRows': 0,
+          'minRows': 0,
+          'minWidth': 0,
+          'minHeight': 0,
+      };
+    }
 
+    ngOnInit() {}
+
+    updateList(login: string) {
+      this.worklistService.getCards(login).subscribe(data => {
+        this.cards = data;
+        console.log(data);
+        console.log(this.cards);
+        for (let i = 0 ; i < this.cards.length; i++) {
+          this.cards[i].date = new Date(this.cards[i].date);
+        }
+        console.log(typeof(this.cards[0].date));
+      });
     }
 
     updatePopUp(index: number): void {
         this.cardForPopUp = this.cards[index];
     }
+
+    getSummaryTime(index: number): number {
+      let sum = 0;
+      this.cards[index].works.forEach(element => {
+        sum += element.time;
+      });
+      return sum;
+    }
+
+    deleteCard(index: number): void {
+      this.worklistService.deleteCard(this.cards[index]._id).subscribe(data => {
+        console.log(data);
+        if (data.n === 1) {
+          this.cards.splice(index , 1);
+        }
+      });
+    }
+
+    deleteWork(index: number): void {
+      this.cardForPopUp.works.splice(index);
+    }
+
+    addWork(): void {
+      this.cardForPopUp.works.push(new Work('', null));
+    }
+}
+
+class Work {
+  public title: string;
+  public time: number;
+
+  constructor(n: string, h: number) {
+    this.title = n;
+    this.time = h;
+  }
 }
 
 class Card {
-  public id: string;
+  public _id: string;
   public login: string;
   public owner: string;
   public date: Date;
-  public works: [string, number][];
+  public works: Work[];
 }
 
 const CARDS: Card[] = [
-  {id: 'kek', login: 'cheburek', owner: 'Pavlik', date: new Date('1995-12-17T03:24:00'), works: [['work1', 3], ['work2', 2]]},
-  {id: 'kek', login: 'cheburek', owner: 'Dmitriy', date: new Date('1995-12-17T03:24:00'), works: [['work1', 3], ['work2', 2]]},
-  {id: 'kek', login: 'cheburek', owner: 'Andrew', date: new Date('1995-12-17T03:24:00'), works: [['work1', 3], ['work2', 2]]},
-  {id: 'kek', login: 'cheburek', owner: 'Alexey', date: new Date('1995-12-17T03:24:00'), works: [['work1', 3], ['work2', 2]]},
-  {id: 'kek', login: 'cheburek', owner: 'Evgeniy', date: new Date('1995-12-17T03:24:00'), works: [['work1', 3], ['work2', 2]]}
+  {_id: 'kek1', login: 'cheburek', owner: 'Pavlik', date: new Date('1995-12-17T03:24:00'), 
+  works: [new Work('work1', 3), new Work('work2', 5)]},
+  {_id: 'kek2', login: 'cheburek', owner: 'Pavlik', date: new Date('1995-12-17T03:24:00'), 
+  works: [new Work('work1', 3), new Work('work2', 5)]},
+  {_id: 'kek3', login: 'cheburek', owner: 'Pavlik', date: new Date('1995-12-17T03:24:00'), 
+  works: [new Work('work1', 3), new Work('work2', 5)]},
+  {_id: 'kek4', login: 'cheburek', owner: 'Pavlik', date: new Date('1995-12-17T03:24:00'), 
+  works: [new Work('work1', 3), new Work('work2', 5)]},
+  {_id: 'kek5', login: 'cheburek', owner: 'Pavlik', date: new Date('1995-12-17T03:24:00'), 
+  works: [new Work('work1', 3), new Work('work2', 5)]},
+  {_id: 'kek6', login: 'cheburek', owner: 'Pavlik', date: new Date('1995-12-17T03:24:00'), 
+  works: [new Work('work1', 3), new Work('work2', 5)]},
+  {_id: 'kek7', login: 'cheburek', owner: 'Pavlik', date: new Date('1995-12-17T03:24:00'), 
+  works: [new Work('work1', 3), new Work('work2', 5)]}
 ];
