@@ -2,7 +2,8 @@
 <div class="container">
   <div class="form-group" align="center">
     <label for="usr">Login:</label>
-    <input type="text" class="form-control" id="usr">
+    <input #login type="text" class="form-control" (keyup.enter)="updateList(login.value)">
+    <button type="button" class="btn btn-primary" (click)="updateList(login.value)" >Primary</button>
   </div>
 
 
@@ -15,11 +16,9 @@
 </div>
 
 <div class="container">
-
   <!-- Modal -->
   <div class="modal fade" id="popUp" role="document">
     <div class="modal-dialog">
-    
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header">
@@ -29,16 +28,14 @@
         </div>
         <div class="modal-body">
             <a href="#" class="list-group-item" *ngFor="let work of cardForPopUp.works">
-              <p>{{work[0]}}</p>
-              <input type="text" class="form-control" id="usr" value={{work[1]}}>
+              <p>{{work.name}}</p>
+              <input type="text" class="form-control" id="usr" value={{work.hours}}>
             </a>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         </div>
       </div>
-      
     </div>
   </div>
-  
 </div>
