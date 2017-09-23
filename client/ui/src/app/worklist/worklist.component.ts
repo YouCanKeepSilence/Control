@@ -13,6 +13,8 @@ import {NgGrid, NgGridItem, NgGridConfig, NgGridItemConfig, NgGridItemEvent} fro
 export class WorklistComponent implements OnInit {
     public cards: Card[] = CARDS;
     public cardForPopUp: Card = this.cards[0];
+    public currentCard: number;
+    public login: string;
     public elementsInRow = 3;
     public configs: NgGridItemConfig[] = [];
     public tableConfig: NgGridConfig = <NgGridConfig>{
@@ -87,6 +89,7 @@ export class WorklistComponent implements OnInit {
 
     updatePopUp(index: number): void {
         this.cardForPopUp = this.cards[index];
+        this.currentCard = index;
     }
 
     getSummaryTime(index: number): number {
@@ -112,6 +115,23 @@ export class WorklistComponent implements OnInit {
 
     addWork(): void {
       this.cardForPopUp.works.push(new Work('', null));
+    }
+
+    applyCard(): void {
+      this.worklistService.updateCard(this.cardForPopUp).subscribe(data => {
+        console.log(data);
+        if (data.n === 1) {
+          this.cards[this.currentCard] = this.cardForPopUp;
+        }
+      });
+    }
+
+    updateWorkTitle(index: number, newTitle: string) {
+      this.cardForPopUp.works[index].title = newTitle;
+    }
+
+    updateWorkTime(index: number, newTime: number) {
+      this.cardForPopUp.works[index].time = newTime;
     }
 }
 

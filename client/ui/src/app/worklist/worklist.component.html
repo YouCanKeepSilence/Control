@@ -30,8 +30,8 @@
           </div>
           <div class="modal-body">
               <a href="#" class="list-group-item" *ngFor="let work of cardForPopUp.works; let i = index">
-                Work:<input type="text" class="form-control" value={{work.title}}>
-                Time:<input type="text" class="form-control" value={{work.time}}>
+                Work:<input #title type="text" class="form-control" value={{work.title}} (change)="updateWorkTitle(i,title.value)">
+                Time:<input #time type="text" class="form-control" value={{work.time}} (change)="updateWorkTime(i,time.value)">
                 <br>
                 <div align="right">
                   <button type="button" class="btn btn-danger" (click)="deleteWork(i)">Delete</button>
@@ -41,7 +41,7 @@
               <button type="button" class="btn btn-primary btn-block" (click)="addWork()">+</button>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-success" (click)="qwe()" data-dismiss="modal">Apply</button>
+            <button type="button" class="btn btn-success" (click)="applyCard()" data-dismiss="modal">Apply</button>
           </div>
         </div>
       </div>
