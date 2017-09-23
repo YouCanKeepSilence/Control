@@ -7,6 +7,7 @@ import { WorklistService } from './worklist.service';
   styleUrls: ['./app.component.css'],
   providers: [WorklistService]
 })
+
 export class AppComponent {
   title = 'app';
 }

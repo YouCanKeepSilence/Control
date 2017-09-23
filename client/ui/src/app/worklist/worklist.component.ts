@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { WorklistService } from '../worklist.service';
 import { Http, Response } from '@angular/http';
-
 import {NgGrid, NgGridItem, NgGridConfig, NgGridItemConfig, NgGridItemEvent} from 'angular2-grid';
+import {Md5} from 'ts-md5/dist/md5';
 
 @Component({
   selector: 'app-worklist',
@@ -11,17 +11,17 @@ import {NgGrid, NgGridItem, NgGridConfig, NgGridItemConfig, NgGridItemEvent} fro
 })
 
 export class WorklistComponent implements OnInit {
-    public cards: Card[] = CARDS;
-    public cardForPopUp: Card = this.cards[0];
-    public currentCard: number;
-    public login: string;
-    public configs: NgGridItemConfig[] = [];
-    public addConfig: NgGridItemConfig;
-    public tableConfig: NgGridConfig = <NgGridConfig>{
-      'margins': [10],
+    private cards: Card[] = CARDS;                                    // список карту текущего пользователя
+    private cardForPopUp: Card = this.cards[0];                       // буферная карта для добавления и изменения в модульном окне
+    private currentCard: number;                                      // индекс карты, копия которой лежит в буфере
+    private login: string;                                            // текущий логин
+    private configs: NgGridItemConfig[] = [];                         // grid концигурации всех карт
+    private addConfig: NgGridItemConfig;                              // grid концигурация элемента Add ard
+    private tableConfig: NgGridConfig = <NgGridConfig>{               // конфигурация grid таблицы
+      'margins': [12, 5],
       'draggable': false,
       'resizable': true,
-      'max_cols': 4,
+      'max_cols': 6,
       'max_rows': 10000,
       'visible_cols': 0,
       'visible_rows': 0,
@@ -30,8 +30,8 @@ export class WorklistComponent implements OnInit {
       'col_width': 50,
       'row_height': 50,
       'cascade': 'up',
-      'min_width': 50,
-      'min_height': 50,
+      'min_width': 0,
+      'min_height': 0,
       'fix_to_grid': false,
       'auto_style': true,
       'auto_resize': true,
@@ -45,7 +45,22 @@ export class WorklistComponent implements OnInit {
       this.updateConfigs();
     }
 
-    updateConfigs() {
+    ngOnInit() {}                                                     // ругается, если удалить
+
+    checkForLogin(): boolean {                                        // проверяет, залогинен ли пользователь
+      return Boolean(this.login);
+    }
+
+    authorization(login: string, pass: string) {                      // авторизации пользователя
+      const hash = Md5.hashStr(login + pass);
+      this.worklistService.logIn(hash).subscribe(date => {
+        // if (true) {      //END ME
+        //   this.login = login;
+        // }
+      });
+    }
+
+    updateConfigs() {                                                 // обновляет конфигурацию элементов в сетке
       for (let i = 0; i < this.cards.length; i++) {
         this.configs.push(this.generateItemConfig(i));
       }
@@ -53,7 +68,7 @@ export class WorklistComponent implements OnInit {
       console.log(this.addConfig);
     }
 
-    generateItemConfig(element: number): NgGridItemConfig {
+    generateItemConfig(element: number): NgGridItemConfig {           // генерирует концигурацию для заданного элемента
       const column = (element % this.tableConfig.max_cols) + 1;
       const row = ((element - column) / this.tableConfig.max_cols) + 1;
       return {
@@ -65,8 +80,8 @@ export class WorklistComponent implements OnInit {
           'resizeHandle': null,
           'borderSize': 15,
           'fixed': false,
-          'draggable': true,
-          'resizable': true,
+          'draggable': false,
+          'resizable': false,
           'payload': null,
           'maxCols': 0,
           'minCols': 0,
@@ -77,9 +92,7 @@ export class WorklistComponent implements OnInit {
       };
     }
 
-    ngOnInit() {}
-
-    updateList(login: string) {
+    updateList(login: string) {                                       // обновляет список карт, дергая из данные из бд
       this.worklistService.getCards(login).subscribe(data => {
         this.cards = data;
         for (let i = 0 ; i < this.cards.length; i++) {
@@ -90,12 +103,12 @@ export class WorklistComponent implements OnInit {
       });
     }
 
-    updatePopUp(index: number): void {
+    updatePopUp(index: number): void {                                // обновляет данные во всплывающем окне
         this.cardForPopUp = this.cards[index];
         this.currentCard = index;
     }
 
-    getSummaryTime(index: number): number {
+    getTotalTime(index: number): number {                             // подсчитывает суммарное время заданной карты
       let sum = 0;
       this.cards[index].works.forEach(element => {
         sum += Number(element.time);
@@ -103,7 +116,7 @@ export class WorklistComponent implements OnInit {
       return sum as number;
     }
 
-    deleteCard(index: number): void {
+    deleteCard(index: number): void {                                 // удаляет карту из массива карт
       this.worklistService.deleteCard(this.cards[index]._id).subscribe(data => {
         if (data.n === 1) {
           this.cards.splice(index , 1);
@@ -112,15 +125,15 @@ export class WorklistComponent implements OnInit {
       });
     }
 
-    deleteWork(index: number): void {
+    deleteWork(index: number): void {                                 // удаляет из заданной карты указанную работу
       this.cardForPopUp.works.splice(index);
     }
 
-    addWork(): void {
+    addWork(): void {                                                 // добавляет в карту новую работу
       this.cardForPopUp.works.push(new Work('', null));
     }
 
-    applyCard(): void {
+    applyCard(): void {                                               // отправляет изменения карты в бд и, если все норм, меняет на локалке
       this.worklistService.updateCard(this.cardForPopUp).subscribe(data => {
         if (data.n === 1) {
           this.cards[this.currentCard] = this.cardForPopUp;
@@ -128,26 +141,26 @@ export class WorklistComponent implements OnInit {
       });
     }
 
-    updateWorkTitle(index: number, newTitle: string) {
+    updateWorkTitle(index: number, newTitle: string) {                // обновляет название указанной работы в модульной карте
       this.cardForPopUp.works[index].title = newTitle;
     }
 
-    updateWorkTime(index: number, newTime: number) {
+    updateWorkTime(index: number, newTime: number) {                  // обновляет время указанной работы модульной карте
       this.cardForPopUp.works[index].time = newTime;
     }
 
-    updateCardDate(newDate: string) {
+    updateCardDate(newDate: string) {                                 // обновляет дату в модульной карте
       this.cardForPopUp.date = new Date(newDate);
     }
 
-    createNewCard() {
+    createNewCard() {                                                 // инициализирует модульную карту новой картой
       this.cardForPopUp = new Card;
       this.cardForPopUp.login = this.login;
-      this.cardForPopUp.date = new Date(2000, 0, 1);
+      this.cardForPopUp.date = new Date(Date());
       this.cardForPopUp.works = [];
     }
 
-    applyNewCard() {
+    applyNewCard() {                                                  // отправляет новую карту в бд, и если все норм, добавляет в локалку
       this.worklistService.addCard(this.cardForPopUp).subscribe(data => {
         if (data.result.n === 1) {
           this.cardForPopUp._id = data.id;
@@ -158,7 +171,7 @@ export class WorklistComponent implements OnInit {
     }
 }
 
-class Work {
+class Work {                                                          // класс работы, используется в карте
   public title: string;
   public time: number;
 
@@ -168,7 +181,7 @@ class Work {
   }
 }
 
-class Card {
+class Card {                                                         // класс карты
   public _id: string;
   public login: string;
   public date: Date;

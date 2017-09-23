@@ -4,24 +4,24 @@ import 'rxjs/add/operator/map';
 
 @Injectable()
 export class WorklistService {
-  apiUrl = 'http://localhost:8080/api/card';
-  logInUrl = 'http://localhost:8080/api/login';
+  apiUrl = 'http://localhost:8080/api/card';                                                // url карт
+  logInUrl = 'http://localhost:8080/api/login';                                             // url логина
 
   constructor(private http: Http) {
     console.log('Worklist Service Initialized...');
 }
 
-  getCards(login) {
+  getCards(login) {                                                                         // получение всех карт юзера по логину
     const headers = new Headers();
     const AskUrl = 'http://localhost:8080/api/cards/' + login;
     return this.http.get(AskUrl, {'headers' : headers}).map((res: Response) => res.json());
   }
 
-  deleteCard(id) {
+  deleteCard(id) {                                                                          // удаление карты по id
     return this.http.delete(this.apiUrl + '/' + id).map((res: Response) => res.json());
   }
 
-  updateCard(card) {
+  updateCard(card) {                                                                        // обновление карты
     const headers = new Headers();
     headers.append('content-type', 'application/json');
     const options = new RequestOptions({ headers: headers });
@@ -29,7 +29,7 @@ export class WorklistService {
     .map((res: Response) => res.json());
   }
 
-  addCard(card) {
+  addCard(card) {                                                                           // добавление новой карты
     const headers = new Headers();
     headers.append('content-type', 'application/json');
     const options = new RequestOptions({ headers: headers });
@@ -37,7 +37,7 @@ export class WorklistService {
     return this.http.post(this.apiUrl , JSON.stringify(card) , options).map((res: Response) => res.json());
   }
 
-  logIn(authInfo) {
+  logIn(authInfo) {                                                                         // авторизация по хэшу логина и пароля
     const headers = new Headers();
     headers.append('content-type', 'application/json');
     const options = new RequestOptions({ headers: headers });
