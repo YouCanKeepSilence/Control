@@ -85,6 +85,7 @@ export class WorklistComponent implements OnInit {
         for (let i = 0 ; i < this.cards.length; i++) {
           this.cards[i].date = new Date(this.cards[i].date);
         }
+        this.login = login;
         this.updateConfigs();
       });
     }
@@ -106,6 +107,7 @@ export class WorklistComponent implements OnInit {
       this.worklistService.deleteCard(this.cards[index]._id).subscribe(data => {
         if (data.n === 1) {
           this.cards.splice(index , 1);
+          this.updateConfigs();
         }
       });
     }
@@ -141,7 +143,7 @@ export class WorklistComponent implements OnInit {
     createNewCard() {
       this.cardForPopUp = new Card;
       this.cardForPopUp.login = this.login;
-      this.cardForPopUp.date = new Date(2000, 1, 1);
+      this.cardForPopUp.date = new Date(2000, 0, 1);
       this.cardForPopUp.works = [];
     }
 
@@ -150,6 +152,7 @@ export class WorklistComponent implements OnInit {
         if (data.result.n === 1) {
           this.cardForPopUp._id = data.id;
           this.cards.push(this.cardForPopUp);
+          this.updateConfigs();
         }
       });
     }
