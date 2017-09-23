@@ -16,7 +16,8 @@ var MongoDb = require('mongodb')
 // Connect to database;
 var MongoClient    = require('mongodb').MongoClient;
 var ObjectID = require('mongodb').ObjectID;
-var url = 'mongodb://localhost:27017/card';
+// var url = 'mongodb://localhost:27017/card';      local url
+var url = 'mongodb://silence:KeepSilence@ds147964.mlab.com:47964/mycards_silence'
 var passport = require('passport')
 var LocalStrategy = require('passport-local').Strategy;
 
