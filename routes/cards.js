@@ -17,6 +17,23 @@ var MongoDb = require('mongodb')
 var MongoClient    = require('mongodb').MongoClient;
 var ObjectID = require('mongodb').ObjectID;
 var url = 'mongodb://localhost:27017/card';
+var passport = require('passport')
+var LocalStrategy = require('passport-local').Strategy;
+
+passport.use(new LocalStrategy(
+  function(username, password, done) {
+    User.findOne({ username: username }, function(err, user) {
+      if (err) { return done(err); }
+      if (!user) {
+        return done(null, false, { message: 'Incorrect username.' });
+      }
+      if (!user.validPassword(password)) {
+        return done(null, false, { message: 'Incorrect password.' });
+      }
+      return done(null, user);
+    });
+  }
+));
 
 var db = MongoClient.connect(url , (err , res) => {
     if(err){
@@ -126,5 +143,9 @@ router.delete('/card/:id' , (req , res) => {
         res.setHeader('Access-Control-Allow-Origin','*') 
         res.json(result)
     })
+})
+
+router.get('/login' , (req, res) => {
+    passport.authenticate()
 })
 module.exports = router;
