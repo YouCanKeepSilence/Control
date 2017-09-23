@@ -29,11 +29,15 @@ export class CardsComponent {
       }
     });
   }
-
-  updateCard(card) {
-    // this._cardServece;
+  logIn(authInfo) {
+    this._cardServece.logIn(authInfo).subscribe(data => {
+      if (data.success) {
+        console.log('Hello ' + data.username);
+      } else {
+        console.log('Auth failed for ' + authInfo);
+      }
+    });
   }
-
   addCard(card) {
     this._cardServece.addCard(card).subscribe(data => {
       if (data.result.n === 1) {

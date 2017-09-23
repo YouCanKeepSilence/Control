@@ -12,29 +12,12 @@
 */
 var express = require('express');
 var router = express.Router();
-var MongoDb = require('mongodb')
+// var MongoDb = require('mongodb')
 // Connect to database;
 var MongoClient    = require('mongodb').MongoClient;
 var ObjectID = require('mongodb').ObjectID;
 // var url = 'mongodb://localhost:27017/card';      local url
 var url = 'mongodb://silence:KeepSilence@ds147964.mlab.com:47964/mycards_silence'
-var passport = require('passport')
-var LocalStrategy = require('passport-local').Strategy;
-
-passport.use(new LocalStrategy(
-  function(username, password, done) {
-    User.findOne({ username: username }, function(err, user) {
-      if (err) { return done(err); }
-      if (!user) {
-        return done(null, false, { message: 'Incorrect username.' });
-      }
-      if (!user.validPassword(password)) {
-        return done(null, false, { message: 'Incorrect password.' });
-      }
-      return done(null, user);
-    });
-  }
-));
 
 var db = MongoClient.connect(url , (err , res) => {
     if(err){
@@ -143,12 +126,22 @@ router.delete('/card/:id' , (req , res) => {
         if(err){
             res.json(err)
         }
-        res.setHeader('Access-Control-Allow-Origin','*') 
+        // res.setHeader('Access-Control-Allow-Origin','*') 
         res.json(result)
     })
 })
 
-router.get('/login' , (req, res) => {
-    passport.authenticate()
+router.post('/login' , (req, res) => {
+    var authInfo = {'login' : req.body.login , 'password' : req.body.password}
+    db.collection('users').findOne(authInfo , (err , result) => {
+        if(err){
+            res.json(err)
+        }
+        var answer = {'success' : (result == null) ? false : true}  //  Если такой пользователь есть то успех
+        if(answer.success){
+            answer.username = result.username;
+        }   
+        res.json(answer);
+    })
 })
 module.exports = router;
