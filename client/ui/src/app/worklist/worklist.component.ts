@@ -15,13 +15,13 @@ export class WorklistComponent implements OnInit {
     public cardForPopUp: Card = this.cards[0];
     public currentCard: number;
     public login: string;
-    public elementsInRow = 3;
     public configs: NgGridItemConfig[] = [];
+    public addConfig: NgGridItemConfig;
     public tableConfig: NgGridConfig = <NgGridConfig>{
       'margins': [10],
       'draggable': false,
       'resizable': true,
-      'max_cols': 3,
+      'max_cols': 4,
       'max_rows': 10000,
       'visible_cols': 0,
       'visible_rows': 0,
@@ -45,13 +45,14 @@ export class WorklistComponent implements OnInit {
       for (let i = 0; i < this.cards.length; i++) {
         this.configs.push(this.generateItemConfig(i));
       }
+      console.log('Вот он');
+      this.addConfig = this.generateItemConfig(this.cards.length);
+      console.log(this.addConfig);
     }
 
     generateItemConfig(element: number): NgGridItemConfig {
-      let column = element % this.elementsInRow;
-      let row = (element - column) / this.elementsInRow;
-      column++;
-      row++;
+      const column = (element % this.tableConfig.max_cols) + 1;
+      const row = ((element - column) / this.tableConfig.max_cols) + 1;
       return {
           'col': column,
           'row': row,
