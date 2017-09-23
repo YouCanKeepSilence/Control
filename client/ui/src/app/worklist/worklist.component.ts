@@ -42,10 +42,13 @@ export class WorklistComponent implements OnInit {
     };
 
     constructor(private worklistService: WorklistService) {
+      this.updateConfigs();
+    }
+
+    updateConfigs() {
       for (let i = 0; i < this.cards.length; i++) {
         this.configs.push(this.generateItemConfig(i));
       }
-      console.log('Вот он');
       this.addConfig = this.generateItemConfig(this.cards.length);
       console.log(this.addConfig);
     }
@@ -79,12 +82,10 @@ export class WorklistComponent implements OnInit {
     updateList(login: string) {
       this.worklistService.getCards(login).subscribe(data => {
         this.cards = data;
-        console.log(data);
-        console.log(this.cards);
         for (let i = 0 ; i < this.cards.length; i++) {
           this.cards[i].date = new Date(this.cards[i].date);
         }
-        console.log(typeof(this.cards[0].date));
+        this.updateConfigs();
       });
     }
 
@@ -96,15 +97,13 @@ export class WorklistComponent implements OnInit {
     getSummaryTime(index: number): number {
       let sum = 0;
       this.cards[index].works.forEach(element => {
-        sum += element.time;
+        sum += Number(element.time);
       });
-      // console.log(sum);
-      return sum;
+      return sum as number;
     }
 
     deleteCard(index: number): void {
       this.worklistService.deleteCard(this.cards[index]._id).subscribe(data => {
-        console.log(data);
         if (data.n === 1) {
           this.cards.splice(index , 1);
         }
@@ -121,8 +120,6 @@ export class WorklistComponent implements OnInit {
 
     applyCard(): void {
       this.worklistService.updateCard(this.cardForPopUp).subscribe(data => {
-        console.log('PPP: ' + JSON.stringify(this.cardForPopUp));
-        console.log(data);
         if (data.n === 1) {
           this.cards[this.currentCard] = this.cardForPopUp;
         }
@@ -135,6 +132,18 @@ export class WorklistComponent implements OnInit {
 
     updateWorkTime(index: number, newTime: number) {
       this.cardForPopUp.works[index].time = newTime;
+    }
+
+    updateCardDate(newDate) {
+      this.cardForPopUp.date = newDate;
+      console.log(newDate);
+    }
+
+    createNewCard() {
+      this.cardForPopUp = new Card;
+      this.cardForPopUp.login = this.login;
+      this.cardForPopUp.date = new Date(2000, 1, 1);
+      this.cardForPopUp.works = [];
     }
 }
 
@@ -151,24 +160,23 @@ class Work {
 class Card {
   public _id: string;
   public login: string;
-  public owner: string;
   public date: Date;
   public works: Work[];
 }
 
 const CARDS: Card[] = [
-  {_id: 'kek1', login: 'cheburek', owner: 'Pavlik', date: new Date('1995-12-17T03:24:00'), 
+  {_id: 'kek1', login: 'cheburek', date: new Date('1995-12-17T03:24:00'), 
   works: [new Work('work1', 3), new Work('work2', 5)]},
-  {_id: 'kek2', login: 'cheburek', owner: 'Pavlik', date: new Date('1995-12-17T03:24:00'), 
+  {_id: 'kek2', login: 'cheburek', date: new Date('1995-12-17T03:24:00'), 
   works: [new Work('work1', 3), new Work('work2', 5)]},
-  {_id: 'kek3', login: 'cheburek', owner: 'Pavlik', date: new Date('1995-12-17T03:24:00'), 
+  {_id: 'kek3', login: 'cheburek', date: new Date('1995-12-17T03:24:00'), 
   works: [new Work('work1', 3), new Work('work2', 5)]},
-  {_id: 'kek4', login: 'cheburek', owner: 'Pavlik', date: new Date('1995-12-17T03:24:00'), 
+  {_id: 'kek4', login: 'cheburek', date: new Date('1995-12-17T03:24:00'), 
   works: [new Work('work1', 3), new Work('work2', 5)]},
-  {_id: 'kek5', login: 'cheburek', owner: 'Pavlik', date: new Date('1995-12-17T03:24:00'), 
+  {_id: 'kek5', login: 'cheburek', date: new Date('1995-12-17T03:24:00'), 
   works: [new Work('work1', 3), new Work('work2', 5)]},
-  {_id: 'kek6', login: 'cheburek', owner: 'Pavlik', date: new Date('1995-12-17T03:24:00'), 
+  {_id: 'kek6', login: 'cheburek', date: new Date('1995-12-17T03:24:00'), 
   works: [new Work('work1', 3), new Work('work2', 5)]},
-  {_id: 'kek7', login: 'cheburek', owner: 'Pavlik', date: new Date('1995-12-17T03:24:00'), 
+  {_id: 'kek7', login: 'cheburek', date: new Date('1995-12-17T03:24:00'), 
   works: [new Work('work1', 3), new Work('work2', 5)]}
 ];
