@@ -97,6 +97,7 @@ export class WorklistComponent implements OnInit {
       this.cards[index].works.forEach(element => {
         sum += element.time;
       });
+      // console.log(sum);
       return sum;
     }
 
@@ -119,6 +120,7 @@ export class WorklistComponent implements OnInit {
 
     applyCard(): void {
       this.worklistService.updateCard(this.cardForPopUp).subscribe(data => {
+        console.log('PPP: ' + JSON.stringify(this.cardForPopUp));
         console.log(data);
         if (data.n === 1) {
           this.cards[this.currentCard] = this.cardForPopUp;

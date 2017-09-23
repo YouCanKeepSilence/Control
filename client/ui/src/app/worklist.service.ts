@@ -22,7 +22,7 @@ export class WorklistService {
   }
 
   updateCard(card) {
-    console.log('new info is ' + card);
+    console.log('new info is ' + JSON.stringify(card));
     return this.http.put(this.apiUrl + '/' + card._id , JSON.stringify(card)).map((res: Response) => res.json());
   }
 }
