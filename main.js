@@ -7,7 +7,9 @@ var app            = express();
 var cards          = require(path.join(__dirname,'/routes/cards'))
 var cors           = require(path.join(__dirname,'routes/cors'))
 var port = 8080;
-app.use(bodyParser.urlencoded( {extended : true} ));
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: false}));
 
 app.use('/api', cards);
 

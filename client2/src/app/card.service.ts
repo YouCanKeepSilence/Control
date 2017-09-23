@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http, Response, Headers, RequestOptions } from '@angular/http';
+import { Http, Response, Headers, RequestOptions, RequestMethod } from '@angular/http';
 import 'rxjs/add/operator/map';
 
 @Injectable()
@@ -22,12 +22,19 @@ export class CardService {
   }
 
   updateCard(card) {
+    const headers = new Headers();
+    headers.append('content-type', 'application/json');
+    const options = new RequestOptions({ headers: headers });
     console.log('new info is ' + card);
-    return this.http.put(this.apiUrl + '/' + card._id , JSON.stringify(card)).map((res: Response) => res.json());
+    return this.http.put(this.apiUrl + '/' + card._id , card , options)
+    .map((res: Response) => res.json());
   }
 
   addCard(card) {
+    const headers = new Headers();
+    headers.append('content-type', 'application/json');
+    const options = new RequestOptions({ headers: headers });
     console.log('new card is ' + card);
-    return this.http.post(this.apiUrl , JSON.stringify(card)).map((res: Response) => res.json());
+    return this.http.post(this.apiUrl , JSON.stringify(card) , options).map((res: Response) => res.json());
   }
 }

@@ -22,7 +22,10 @@ export class WorklistService {
   }
 
   updateCard(card) {
-    console.log('new info is ' + JSON.stringify(card));
-    return this.http.put(this.apiUrl + '/' + card._id , JSON.stringify(card)).map((res: Response) => res.json());
+    const headers = new Headers();
+    headers.append('content-type', 'application/json');
+    const options = new RequestOptions({ headers: headers });
+    // console.log('new info is ' + JSON.stringify(card));
+    return this.http.put(this.apiUrl + '/' + card._id , JSON.stringify(card) , options).map((res: Response) => res.json());
   }
 }

@@ -124,8 +124,10 @@ router.get('/card/:id' , (req , res) => {
 })
 // Update card by id
 router.put('/card/:id' , (req , res) => {
-    var newInfo = req.body      // Такое себе.
+    var newInfo = req.body;      // Такое себе.
     newInfo.date = new Date(req.body.date);
+    delete newInfo._id;
+    // console.log(' NEW INFO ' + newInfo);
     db.collection('cards').updateOne({_id : ObjectID(req.params.id)} , newInfo, (err , result) => {
         if(err){
             res.json(err)
