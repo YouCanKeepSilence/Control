@@ -134,9 +134,8 @@ export class WorklistComponent implements OnInit {
       this.cardForPopUp.works[index].time = newTime;
     }
 
-    updateCardDate(newDate) {
-      this.cardForPopUp.date = newDate;
-      console.log(newDate);
+    updateCardDate(newDate: string) {
+      this.cardForPopUp.date = new Date(newDate);
     }
 
     createNewCard() {
@@ -144,6 +143,15 @@ export class WorklistComponent implements OnInit {
       this.cardForPopUp.login = this.login;
       this.cardForPopUp.date = new Date(2000, 1, 1);
       this.cardForPopUp.works = [];
+    }
+
+    applyNewCard() {
+      this.worklistService.addCard(this.cardForPopUp).subscribe(data => {
+        if (data.result.n === 1) {
+          this.cardForPopUp._id = data.id;
+          this.cards.push(this.cardForPopUp);
+        }
+      });
     }
 }
 

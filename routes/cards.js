@@ -44,7 +44,7 @@ router.get('/cards/:login', (req, res) => {
 router.post('/card' , (req , res) => {
     var whatToAdd = req.body;
     // console.log(req.body.works)
-    whatToAdd.works = JSON.parse(req.body.works)
+    whatToAdd.works = req.body.works
     whatToAdd.date = new Date(whatToAdd.date);
     db.collection('cards').insertOne(whatToAdd , (err, result) => {
         if(err){
