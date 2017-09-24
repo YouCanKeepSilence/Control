@@ -189,6 +189,14 @@ export class WorklistComponent implements OnInit {
         }
       });
     }
+
+    parseDate(dateString: string): Date {
+      if (dateString) {
+          return new Date(dateString);
+      } else {
+          return new Date();
+      }
+  }
 }
 
 class Work {                                                          // класс работы, используется в карте

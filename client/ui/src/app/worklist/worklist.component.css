@@ -6,6 +6,17 @@
   margin: 2%;
 }
 
+.left {
+  float: left;
+  width: 30%;
+  margin: 1%;
+  
+}
+.right {
+  float: right;
+  width: 30%;
+  margin: 1%;
+}
 @import url(http://fonts.googleapis.com/css?family=Roboto);
 
 .loginmodal-container {
