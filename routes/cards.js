@@ -144,4 +144,20 @@ router.post('/login' , (req, res) => {
         res.json(answer);
     })
 })
+
+router.post('/register' , (req , res) => {
+    var userToAdd = {'authHash' : req.body.authHash , 'username' : req.body.username};
+    db.collection('usersHash').insertOne(userToAdd , (err , result) => {
+        if(err){
+            res.json(err)
+        }
+        console.log(result);
+        if(result === null){
+            res.json({'success' : false});
+        }
+        else {
+            res.json({'success' : true});
+        }
+    })
+})
 module.exports = router;
