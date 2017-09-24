@@ -141,6 +141,7 @@ router.post('/login' , (req, res) => {
         if(answer.success){
             answer.username = result.username;
         }   
+        console.log(result);
         res.json(answer);
     })
 })

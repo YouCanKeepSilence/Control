@@ -6,6 +6,7 @@ import 'rxjs/add/operator/map';
 export class WorklistService {
   apiUrl = 'http://localhost:8080/api/card';                                                // url карт
   logInUrl = 'http://localhost:8080/api/login';                                             // url логина
+  registerUrl = 'http://localhost:8080/api/register';
 
   constructor(private http: Http) {
     console.log('Worklist Service Initialized...');
@@ -41,7 +42,6 @@ export class WorklistService {
     const headers = new Headers();
     headers.append('content-type', 'application/json');
     const options = new RequestOptions({ headers: headers });
-    console.log(authInfo);
     const body = {'authHash': authInfo };
     return this.http.post(this.logInUrl , JSON.stringify(body) , options).map((res: Response) => res.json());
   }
@@ -50,6 +50,6 @@ export class WorklistService {
     const headers = new Headers();
     headers.append('content-type', 'application/json');
     const options = new RequestOptions({ headers: headers });
-    return this.http.post(this.logInUrl , JSON.stringify(userInfo) , options).map((res: Response) => res.json());
+    return this.http.post(this.registerUrl , JSON.stringify(userInfo) , options).map((res: Response) => res.json());
   }
 }

@@ -3,6 +3,7 @@ import { WorklistService } from '../worklist.service';
 import { Http, Response } from '@angular/http';
 import {NgGrid, NgGridItem, NgGridConfig, NgGridItemConfig, NgGridItemEvent} from 'angular2-grid';
 import {Md5} from 'ts-md5/dist/md5';
+import {DateParser} from '../../../node_modules/angular-dateParser/src/DateParser';
 
 @Component({
   selector: 'app-worklist',
@@ -59,9 +60,20 @@ export class WorklistComponent implements OnInit {
           this.login = login;
           this.username = data.username;
           this.updateList(this.login);
-          console.log('Hello ' + this.username);
+          console.log('Authorization success: ' + this.username);
         } else {
           console.log('Authorization failed');
+        }
+      });
+    }
+
+    registration(name: string, login: string, pass: string) {
+      const hash = Md5.hashStr(login + pass);
+      this.worklistService.register({'authHash' : hash, 'username' : name}).subscribe(data => {
+        if (data.success) {
+          console.log('Registration success');
+        } else {
+          console.log('Registration failed');
         }
       });
     }
