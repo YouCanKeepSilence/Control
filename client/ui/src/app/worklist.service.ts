@@ -45,4 +45,11 @@ export class WorklistService {
     const body = {'authHash': authInfo };
     return this.http.post(this.logInUrl , JSON.stringify(body) , options).map((res: Response) => res.json());
   }
+
+  register(userInfo) {
+    const headers = new Headers();
+    headers.append('content-type', 'application/json');
+    const options = new RequestOptions({ headers: headers });
+    return this.http.post(this.logInUrl , JSON.stringify(userInfo) , options).map((res: Response) => res.json());
+  }
 }
