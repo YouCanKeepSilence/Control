@@ -1,6 +1,7 @@
 <div *ngIf="checkForLogin(); else loginWindow">
-  <br>
-  <div [ngGrid]="tableConfig">
+  <h3 align="center">Hello, {{username}}</h3>
+  <div *ngIf="cards.length == 0" align="center"><h5>You have no cards.</h5></div>
+  <div [ngGrid]="tableConfig" class="margin">
     <div *ngFor="let card of cards; let i = index" [(ngGridItem)]="configs[i]">
       <a align="center" class="list-group-item list-group-item-info" (click)="updatePopUp(i)" data-toggle="modal" data-target="#popUp">
         <button type="button" class="close" (click)="deleteCard(i)" onclick="event.stopPropagation();"><font color="red">&times;</font></button>
@@ -10,7 +11,8 @@
     </div>
     <div [(ngGridItem)]="addConfig">
       <a align="center" class="list-group-item list-group-item-success" (click)="createNewCard()" data-toggle="modal" data-target="#createPopUp">
-        <h4>Add card</h4>
+        <h4 class="list-group-item-heading">+</h4>
+        <p class="list-group-item-text">(Add new card)</p>
       </a>
     </div>
   </div>
@@ -33,10 +35,10 @@
               <div class="container-fluid">
                 <div class="row">
                   <div class="col-sm-7">
-                    <input #title type="text" class="form-control" value={{work.title}} placeholder="Name" (change)="updateWorkTitle(i,title.value)">
+                    <input #title type="text" class="form-control" placeholder="Name" value={{work.title}} (change)="updateWorkTitle(i,title.value)">
                   </div>
                   <div class="col-sm-4">
-                    <input #time type="text" class="form-control" value={{work.time}} placeholder="Time" (change)="updateWorkTime(i,time.value)">
+                    <input #time type="text" class="form-control" type="number" min="0" value={{work.time}} placeholder="Time" (change)="updateWorkTime(i,time.value)">
                   </div>
                   <div class="col-sm-1">
                     <button type="button" class="btn btn-danger" (click)="deleteWork(i)">X</button>
@@ -74,10 +76,10 @@
               <div class="container-fluid">
                 <div class="row">
                   <div class="col-sm-7">
-                    <input #title type="text" class="form-control" value={{work.title}} (change)="updateWorkTitle(i,title.value)">
+                    <input #title type="text" class="form-control" (change)="updateWorkTitle(i,title.value)">
                   </div>
                   <div class="col-sm-4">
-                    <input #time type="text" class="form-control" value={{work.time}} (change)="updateWorkTime(i,time.value)">
+                    <input #time type="text" class="form-control" type="number" min="0" value="0" (change)="updateWorkTime(i,time.value)">
                   </div>
                   <div class="col-sm-1">
                     <button type="button" class="btn btn-danger" (click)="deleteWork(i)">X</button>
@@ -102,8 +104,26 @@
   <br>
   <div class="loginmodal-container">
     <h1>Login to Your Account</h1><br>
-    <input #login type="text" placeholder="Username">
-    <input #pass type="password" placeholder="Password">
+    <input #login type="text" placeholder="Username" (keyup.enter)="authorization(login.value,pass.value)">
+    <input #pass type="password" placeholder="Password" (keyup.enter)="authorization(login.value,pass.value)">
     <input type="submit" class="login loginmodal-submit" value="Login" (click)="authorization(login.value,pass.value)">
+    <div class="login-help" align="right">
+        <a href="#" data-toggle="modal" data-target="#register-modal">Register</a>
+    </div>
+  </div>
+  
+  <div class="modal fade" id="register-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+      <div class="loginmodal-container">
+        <h1>Registration form</h1><br>
+        <form>
+          <input #regname type="text" placeholder="Full name">
+          <input #reglogin type="text" placeholder="Login">
+          <input #regpass type="password" placeholder="Password">
+          <input type="submit" class="login loginmodal-submit" value="Register" data-dismiss="modal" (click)="registration(regname.value,reglogin.value,regpass.value)">
+        </form>
+      </div>
+    </div>
   </div>
 </ng-template>
+

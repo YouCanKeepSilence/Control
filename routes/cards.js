@@ -44,7 +44,8 @@ router.get('/cards/:login', (req, res) => {
 router.post('/card' , (req , res) => {
     var whatToAdd = req.body;
     whatToAdd.works = req.body.works
-    whatToAdd.date = new Date(whatToAdd.date);
+    var realDate = new Date(whatToAdd);
+    whatToAdd.date = new Date(realDate.getFullYear , realDate.getMonth , realDate.getDay);
     db.collection('cards').insertOne(whatToAdd , (err, result) => {
         if(err){
             console.log(err);
@@ -88,10 +89,11 @@ router.post('/login' , (req, res) => {
             console.log(err);
             res.json(err);
         }
-        var answer = {'success' : (result == null) ? false : true}  //  Если такой пользователь есть то успех
+        var answer = {'success' : (result === null && result.username !== '') ? false : true}  //  Если такой пользователь есть то успех
         if(answer.success){
             answer.username = result.username;
         }   
+        console.log(result);
         res.json(answer);
     })
 })
