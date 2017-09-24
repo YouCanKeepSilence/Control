@@ -79,19 +79,20 @@ export class WorklistComponent implements OnInit {
     }
 
     updateConfigs() {                                                 // update configs of elements in the grid
-      console.log('UpdateConfigs: ' + this.cards.length);
+      // console.log('UpdateConfigs: ' + this.cards.length);
       this.configs = [];
       for (let i = 0; i < this.cards.length; i++) {
         this.configs.push(this.generateItemConfig(i));
+        // console.log(this.configs[i]);
       }
-      console.log('Last:');
+      // console.log('Last:');
       this.addConfig = this.generateItemConfig(this.cards.length);
+      // console.log(this.addConfig);
     }
 
     generateItemConfig(element: number): NgGridItemConfig {           // generate config for the element
-      const column = Math.ceil(element % this.tableConfig.max_cols) + 1;
-      const row = Math.ceil((element - column) / this.tableConfig.max_cols) + 1;
-      console.log(row, column);
+      const column = (element % this.tableConfig.max_cols) + 1;
+      const row = ((element - column) / this.tableConfig.max_cols) + 1;
       return {
           'col': column,
           'row': row,
@@ -189,7 +190,7 @@ export class WorklistComponent implements OnInit {
         if (data.result.n === 1) {
           this.cardForPopUp._id = data.id;
           this.cards.push(this.cardForPopUp);
-          // this.updateConfigs();
+          this.updateConfigs();
           this.updateList(this.login);
         }
       });
@@ -228,9 +229,6 @@ class Card {                                                         // клас
     this._id = card._id;
     this.login = card.login;
     this.date = new Date(card.date);
-    // this.works = new Array<Work>(card.works);
-    // this.works = Object.assign({}, card.works);
-    // this.works = card.works;
     this.works = card.works.slice(0);
   }
 }

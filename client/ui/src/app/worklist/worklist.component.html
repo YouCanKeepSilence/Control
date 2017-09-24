@@ -5,7 +5,7 @@
     <div *ngFor="let card of cards; let i = index" [(ngGridItem)]="configs[i]">
       <a align="center" class="list-group-item list-group-item-info" (click)="updatePopUp(i)" data-toggle="modal" data-target="#popUp">
         <button type="button" class="close" (click)="deleteCard(i)" onclick="event.stopPropagation();"><font color="red">&times;</font></button>
-        <h4 class="list-group-item-heading">{{card.date.getDate()}}.{{card.date.getMonth() + 1}}.{{card.date.getFullYear()}}</h4>
+        <h4 class="list-group-item-heading">{{card.date | date: 'EEE dd.MM.yyyy'}}</h4>
         <p class="list-group-item-text">Total time: {{getTotalTime(i)}}</p>
       </a>
     </div>
@@ -23,13 +23,13 @@
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal">&times;</button>
-            <h3 align="center" class="modal-title">{{cardForPopUp.date.getDate()}}.{{cardForPopUp.date.getMonth() + 1}}.{{cardForPopUp.date.getFullYear()}}</h3>
+            <h3 align="center" class="modal-title">{{cardForPopUp.date | date: 'EEEE dd.MM.yyyy'}}</h3>
           </div>
           <div class="modal-body">
             <div class="row">
               <div class="col-sm-3"></div>
-              <div class="col-sm-5">Works:</div>
-              <div class="col-sm-4">Time:</div>
+              <div class="col-sm-5"><h4>Works:</h4></div>
+              <div class="col-sm-4"><h4>Time:</h4></div>
             </div>
             <a class="list-group-item" *ngFor="let work of cardForPopUp.works; let i = index">
               <div class="container-fluid">
@@ -47,11 +47,11 @@
               </div>
             </a>
             <br>
-            <button type="button" class="btn btn-primary btn-block" (click)="addWork()">+</button>
+            <button type="button" class="btn btn-primary btn-block" (click)="addWork()"><font size="5">+</font></button>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-success" (click)="applyCard()" data-dismiss="modal">Apply</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal"><h4>Close</h4></button>
+            <button type="button" class="btn btn-success" (click)="applyCard()" data-dismiss="modal"><h4>Apply</h4></button>
           </div>
         </div>
       </div>
@@ -64,15 +64,18 @@
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal">&times;</button>
-            <br>
-            <input class="left" type="date" #myDate [value]="cardForPopUp.date | date:'yyyy-MM-dd'" (input)="cardForPopUp.date=parseDate(myDate.value)" />
-            <span class="right">{{cardForPopUp.date | date:'EEEE dd.MM.yyyy'}}</span>
+            <span align="center"><h4>{{cardForPopUp.date | date:'EEEE dd.MM.yyyy'}}</h4></span>
           </div>
           <div class="modal-body">
+            <div align="center">
+              <font size="3">Enter the date:&ensp;</font>
+              <input type="date" #myDate [value]="cardForPopUp.date | date:'yyyy-MM-dd'" (input)="cardForPopUp.date=parseDate(myDate.value)"/>
+            </div>
+            <br>
             <div class="row">
               <div class="col-sm-3"></div>
-              <div class="col-sm-5">Works:</div>
-              <div class="col-sm-4">Time:</div>
+              <div class="col-sm-5"><h4>Works:</h4></div>
+              <div class="col-sm-4"><h4>Time:</h4></div>
             </div>
             <a class="list-group-item" *ngFor="let work of cardForPopUp.works; let i = index">
               <div class="container-fluid">
@@ -90,11 +93,11 @@
               </div>
             </a>
             <br>
-            <button type="button" class="btn btn-primary btn-block" (click)="addWork()">+</button>
+            <button type="button" class="btn btn-primary btn-block" (click)="addWork()"><font size="5">+</font></button>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-success" (click)="applyNewCard()" data-dismiss="modal">Apply</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal"><h4>Close</h4></button>
+            <button type="button" class="btn btn-success" (click)="applyNewCard()" data-dismiss="modal"><h4>Apply</h4></button>
           </div>
         </div>
       </div>

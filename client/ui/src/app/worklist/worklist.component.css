@@ -4,18 +4,6 @@
     width: 30%;
 }
 
-.left {
-  float: left;
-  width: 30%;
-  margin: 1%;
-  
-}
-.right {
-  float: right;
-  width: 30%;
-  margin: 1%;
-}
-
 .loginmodal-container {
   padding: 30px;
   max-width: 350px;
@@ -50,7 +38,6 @@
   background: #fff;
   border: 1px solid #d9d9d9;
   border-top: 1px solid #c0c0c0;
-  /* border-radius: 2px; */
   padding: 0 8px;
   box-sizing: border-box;
   -moz-box-sizing: border-box;
