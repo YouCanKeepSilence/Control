@@ -79,11 +79,11 @@ export class WorklistComponent implements OnInit {
     }
 
     updateConfigs() {                                                 // update configs of elements in the grid
+      this.configs = [];
       for (let i = 0; i < this.cards.length; i++) {
         this.configs.push(this.generateItemConfig(i));
       }
       this.addConfig = this.generateItemConfig(this.cards.length);
-      console.log(this.addConfig);
     }
 
     generateItemConfig(element: number): NgGridItemConfig {           // generate config for the element

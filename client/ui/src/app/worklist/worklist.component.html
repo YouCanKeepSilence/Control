@@ -1,7 +1,7 @@
 <div *ngIf="checkForLogin(); else loginWindow">
   <h3 align="center">Hello, {{username}}</h3>
   <div *ngIf="cards.length == 0" align="center"><h5>You have no cards.</h5></div>
-  <div [ngGrid]="tableConfig" class="margin">
+  <div [ngGrid]="tableConfig">
     <div *ngFor="let card of cards; let i = index" [(ngGridItem)]="configs[i]">
       <a align="center" class="list-group-item list-group-item-info" (click)="updatePopUp(i)" data-toggle="modal" data-target="#popUp">
         <button type="button" class="close" (click)="deleteCard(i)" onclick="event.stopPropagation();"><font color="red">&times;</font></button>
