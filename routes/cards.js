@@ -137,7 +137,7 @@ router.post('/login' , (req, res) => {
         if(err){
             res.json(err)
         }
-        var answer = {'success' : (result == null) ? false : true}  //  Если такой пользователь есть то успех
+        var answer = {'success' : (result === null && result.username !== '') ? false : true}  //  Если такой пользователь есть то успех
         if(answer.success){
             answer.username = result.username;
         }   
@@ -152,7 +152,6 @@ router.post('/register' , (req , res) => {
         if(err){
             res.json(err)
         }
-        console.log(result);
         if(result === null){
             res.json({'success' : false});
         }
