@@ -45,7 +45,8 @@ router.post('/card' , (req , res) => {
     var whatToAdd = req.body;
     // console.log(req.body.works)
     whatToAdd.works = req.body.works
-    whatToAdd.date = new Date(whatToAdd.date);
+    var realDate = new Date(whatToAdd);
+    whatToAdd.date = new Date(realDate.getFullYear , realDate.getMonth , realDate.getDay);
     db.collection('cards').insertOne(whatToAdd , (err, result) => {
         if(err){
             res.json(err)
