@@ -41,6 +41,8 @@ export class WorklistService {
     const headers = new Headers();
     headers.append('content-type', 'application/json');
     const options = new RequestOptions({ headers: headers });
-    return this.http.post(this.logInUrl , JSON.stringify(authInfo) , options).map((res: Response) => res.json());
+    console.log(authInfo);
+    const body = {'hash': authInfo };
+    return this.http.post(this.logInUrl , JSON.stringify(body) , options).map((res: Response) => res.json());
   }
 }

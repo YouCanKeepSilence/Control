@@ -89,7 +89,7 @@ router.delete('/card' , (req , res) => {
         if(err){ 
             res.json(err);
         }    
-        res.setHeader('Access-Control-Allow-Origin','*') 
+        // res.setHeader('Access-Control-Allow-Origin','*') 
         res.json(result);
     });
 })
@@ -132,8 +132,11 @@ router.delete('/card/:id' , (req , res) => {
 })
 
 router.post('/login' , (req, res) => {
-    var authInfo = {'login' : req.body.login , 'password' : req.body.password}
-    db.collection('users').findOne(authInfo , (err , result) => {
+    console.log('TUT')
+
+    console.log(req.body);
+    var authInfo = req.body;
+    db.collection('usersHash').findOne(authInfo , (err , result) => {
         if(err){
             res.json(err)
         }
