@@ -35,10 +35,10 @@
               <div class="container-fluid">
                 <div class="row">
                   <div class="col-sm-7">
-                    <input #title type="text" class="form-control" placeholder="Name" (change)="updateWorkTitle(i,title.value)">
+                    <input #title type="text" class="form-control" placeholder="Name" value={{work.title}} (change)="updateWorkTitle(i,title.value)">
                   </div>
                   <div class="col-sm-4">
-                    <input #time type="text" class="form-control" type="number" placeholder="Time" (change)="updateWorkTime(i,time.value)">
+                    <input #time type="text" class="form-control" type="number" min="0" value={{work.time}} placeholder="Time" (change)="updateWorkTime(i,time.value)">
                   </div>
                   <div class="col-sm-1">
                     <button type="button" class="btn btn-danger" (click)="deleteWork(i)">X</button>
@@ -79,7 +79,7 @@
                     <input #title type="text" class="form-control" (change)="updateWorkTitle(i,title.value)">
                   </div>
                   <div class="col-sm-4">
-                    <input #time type="text" class="form-control" type="number" (change)="updateWorkTime(i,time.value)">
+                    <input #time type="text" class="form-control" type="number" min="0" value="0" (change)="updateWorkTime(i,time.value)">
                   </div>
                   <div class="col-sm-1">
                     <button type="button" class="btn btn-danger" (click)="deleteWork(i)">X</button>
