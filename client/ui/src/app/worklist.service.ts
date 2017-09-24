@@ -42,7 +42,7 @@ export class WorklistService {
     headers.append('content-type', 'application/json');
     const options = new RequestOptions({ headers: headers });
     console.log(authInfo);
-    const body = {'hash': authInfo };
+    const body = {'authHash': authInfo };
     return this.http.post(this.logInUrl , JSON.stringify(body) , options).map((res: Response) => res.json());
   }
 }

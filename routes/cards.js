@@ -132,9 +132,6 @@ router.delete('/card/:id' , (req , res) => {
 })
 
 router.post('/login' , (req, res) => {
-    console.log('TUT')
-
-    console.log(req.body);
     var authInfo = req.body;
     db.collection('usersHash').findOne(authInfo , (err , result) => {
         if(err){
