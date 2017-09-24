@@ -11,13 +11,14 @@ import {Md5} from 'ts-md5/dist/md5';
 })
 
 export class WorklistComponent implements OnInit {
-    private cards: Card[] = CARDS;                                    // список карту текущего пользователя
-    private cardForPopUp: Card = this.cards[0];                       // буферная карта для добавления и изменения в модульном окне
-    private currentCard: number;                                      // индекс карты, копия которой лежит в буфере
-    private login: string;                                            // текущий логин
-    private configs: NgGridItemConfig[] = [];                         // grid концигурации всех карт
-    private addConfig: NgGridItemConfig;                              // grid концигурация элемента Add ard
-    private tableConfig: NgGridConfig = <NgGridConfig>{               // конфигурация grid таблицы
+    private cards: Card[] = [];                                       // list of cards of current user
+    private cardForPopUp: Card = new Card;                            // buffer card for adding and changing in the modal window
+    private currentCard: number;                                      // index of card, which copy place in the buffer
+    private login: string;                                            // current login
+    private username: string;                                         // current username
+    private configs: NgGridItemConfig[] = [];                         // grid configs of all cards
+    private addConfig: NgGridItemConfig;                              // grid config of last element
+    private tableConfig: NgGridConfig = <NgGridConfig>{               // grid config of table
       'margins': [12, 5],
       'draggable': false,
       'resizable': true,
@@ -45,22 +46,27 @@ export class WorklistComponent implements OnInit {
       this.updateConfigs();
     }
 
-    ngOnInit() {}                                                     // ругается, если удалить
+    ngOnInit() {}                                                     // don't remove
 
-    checkForLogin(): boolean {                                        // проверяет, залогинен ли пользователь
+    checkForLogin(): boolean {                                        // check for authorization
       return Boolean(this.login);
     }
 
-    authorization(login: string, pass: string) {                      // авторизации пользователя
+    authorization(login: string, pass: string) {                      // authorization of user
       const hash = Md5.hashStr(login + pass);
-      this.worklistService.logIn(hash).subscribe(date => {
-        // if (true) {      //END ME
-        //   this.login = login;
-        // }
+      this.worklistService.logIn(hash).subscribe(data => {
+        if (data.success) {
+          this.login = login;
+          this.username = data.username;
+          this.updateList(this.login);
+          console.log('Hello ' + this.username);
+        } else {
+          console.log('Authorization failed');
+        }
       });
     }
 
-    updateConfigs() {                                                 // обновляет конфигурацию элементов в сетке
+    updateConfigs() {                                                 // update configs of elements in the grid
       for (let i = 0; i < this.cards.length; i++) {
         this.configs.push(this.generateItemConfig(i));
       }
@@ -68,7 +74,7 @@ export class WorklistComponent implements OnInit {
       console.log(this.addConfig);
     }
 
-    generateItemConfig(element: number): NgGridItemConfig {           // генерирует концигурацию для заданного элемента
+    generateItemConfig(element: number): NgGridItemConfig {           // generate config for the element
       const column = (element % this.tableConfig.max_cols) + 1;
       const row = ((element - column) / this.tableConfig.max_cols) + 1;
       return {
@@ -92,7 +98,7 @@ export class WorklistComponent implements OnInit {
       };
     }
 
-    updateList(login: string) {                                       // обновляет список карт, дергая из данные из бд
+    updateList(login: string) {                                       // update card list using data from db
       this.worklistService.getCards(login).subscribe(data => {
         this.cards = data;
         for (let i = 0 ; i < this.cards.length; i++) {
@@ -103,12 +109,14 @@ export class WorklistComponent implements OnInit {
       });
     }
 
-    updatePopUp(index: number): void {                                // обновляет данные во всплывающем окне
-        this.cardForPopUp = this.cards[index];
+    updatePopUp(index: number): void {                                // update data in the popUp
+        this.cardForPopUp = new Card;
+        this.cardForPopUp.copyCardInfo(this.cards[index]);
+        // this.ca this.cards[index];
         this.currentCard = index;
     }
 
-    getTotalTime(index: number): number {                             // подсчитывает суммарное время заданной карты
+    getTotalTime(index: number): number {                             // count total time of the card
       let sum = 0;
       this.cards[index].works.forEach(element => {
         sum += Number(element.time);
@@ -116,7 +124,7 @@ export class WorklistComponent implements OnInit {
       return sum as number;
     }
 
-    deleteCard(index: number): void {                                 // удаляет карту из массива карт
+    deleteCard(index: number): void {                                 // delete the card from the list
       this.worklistService.deleteCard(this.cards[index]._id).subscribe(data => {
         if (data.n === 1) {
           this.cards.splice(index , 1);
@@ -125,15 +133,15 @@ export class WorklistComponent implements OnInit {
       });
     }
 
-    deleteWork(index: number): void {                                 // удаляет из заданной карты указанную работу
+    deleteWork(index: number): void {                                 // remove the work from the card
       this.cardForPopUp.works.splice(index);
     }
 
-    addWork(): void {                                                 // добавляет в карту новую работу
+    addWork(): void {                                                 // add a new work into the card
       this.cardForPopUp.works.push(new Work('', null));
     }
 
-    applyCard(): void {                                               // отправляет изменения карты в бд и, если все норм, меняет на локалке
+    applyCard(): void {                                               // send changings of the card into db and change in local if ok
       this.worklistService.updateCard(this.cardForPopUp).subscribe(data => {
         if (data.n === 1) {
           this.cards[this.currentCard] = this.cardForPopUp;
@@ -141,7 +149,7 @@ export class WorklistComponent implements OnInit {
       });
     }
 
-    updateWorkTitle(index: number, newTitle: string) {                // обновляет название указанной работы в модульной карте
+    updateWorkTitle(index: number, newTitle: string) {                // update nameof the work into the buffer card
       this.cardForPopUp.works[index].title = newTitle;
     }
 
@@ -186,21 +194,35 @@ class Card {                                                         // клас
   public login: string;
   public date: Date;
   public works: Work[];
+
+  constructor() {
+    this.date = new Date;
+  }
+
+  copyCardInfo(card: Card) {
+    this._id = card._id;
+    this.login = card.login;
+    this.date = new Date(card.date);
+    // this.works = new Array<Work>(card.works);
+    // this.works = Object.assign({}, card.works);
+    // this.works = card.works;
+    this.works = card.works.slice(0);
+  }
 }
 
-const CARDS: Card[] = [
-  {_id: 'kek1', login: 'cheburek', date: new Date('1995-12-17T03:24:00'), 
-  works: [new Work('work1', 3), new Work('work2', 5)]},
-  {_id: 'kek2', login: 'cheburek', date: new Date('1995-12-17T03:24:00'), 
-  works: [new Work('work1', 3), new Work('work2', 5)]},
-  {_id: 'kek3', login: 'cheburek', date: new Date('1995-12-17T03:24:00'), 
-  works: [new Work('work1', 3), new Work('work2', 5)]},
-  {_id: 'kek4', login: 'cheburek', date: new Date('1995-12-17T03:24:00'), 
-  works: [new Work('work1', 3), new Work('work2', 5)]},
-  {_id: 'kek5', login: 'cheburek', date: new Date('1995-12-17T03:24:00'), 
-  works: [new Work('work1', 3), new Work('work2', 5)]},
-  {_id: 'kek6', login: 'cheburek', date: new Date('1995-12-17T03:24:00'), 
-  works: [new Work('work1', 3), new Work('work2', 5)]},
-  {_id: 'kek7', login: 'cheburek', date: new Date('1995-12-17T03:24:00'), 
-  works: [new Work('work1', 3), new Work('work2', 5)]}
-];
+// const CARDS: Card[] = [
+//   {_id: 'kek1', login: 'cheburek', date: new Date('1995-12-17T03:24:00'), 
+//   works: [new Work('work1', 3), new Work('work2', 5)]},
+//   {_id: 'kek2', login: 'cheburek', date: new Date('1995-12-17T03:24:00'), 
+//   works: [new Work('work1', 3), new Work('work2', 5)]},
+//   {_id: 'kek3', login: 'cheburek', date: new Date('1995-12-17T03:24:00'), 
+//   works: [new Work('work1', 3), new Work('work2', 5)]},
+//   {_id: 'kek4', login: 'cheburek', date: new Date('1995-12-17T03:24:00'), 
+//   works: [new Work('work1', 3), new Work('work2', 5)]},
+//   {_id: 'kek5', login: 'cheburek', date: new Date('1995-12-17T03:24:00'), 
+//   works: [new Work('work1', 3), new Work('work2', 5)]},
+//   {_id: 'kek6', login: 'cheburek', date: new Date('1995-12-17T03:24:00'), 
+//   works: [new Work('work1', 3), new Work('work2', 5)]},
+//   {_id: 'kek7', login: 'cheburek', date: new Date('1995-12-17T03:24:00'), 
+//   works: [new Work('work1', 3), new Work('work2', 5)]}
+// ];

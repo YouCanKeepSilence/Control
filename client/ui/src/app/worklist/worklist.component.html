@@ -1,11 +1,5 @@
 <div *ngIf="checkForLogin(); else loginWindow">
-  <div class="container">
-    <div class="form-group" align="center">
-      <label for="usr">Login:</label>
-      <input #login type="text" class="form-control" (keyup.enter)="updateList(login.value)">
-    </div>
-  </div>
-  
+  <br>
   <div [ngGrid]="tableConfig">
     <div *ngFor="let card of cards; let i = index" [(ngGridItem)]="configs[i]">
       <a align="center" class="list-group-item list-group-item-info" (click)="updatePopUp(i)" data-toggle="modal" data-target="#popUp">
