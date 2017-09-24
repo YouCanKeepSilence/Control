@@ -33,80 +33,29 @@ router.get('/cards/:login', (req, res) => {
     console.log(whatToFind);
     db.collection('cards').find(whatToFind).toArray((err, result) => {
         if(err){
-            res.json(err);
+            console.log(err);
+            return res.json(err);
         }
-        // res.setHeader('Access-Control-Allow-Origin','*') 
-        res.json(result)
+        res.json(result);
     });
 })
 
 // Add card function.
 router.post('/card' , (req , res) => {
     var whatToAdd = req.body;
-    // console.log(req.body.works)
     whatToAdd.works = req.body.works
     var realDate = new Date(whatToAdd);
     whatToAdd.date = new Date(realDate.getFullYear , realDate.getMonth , realDate.getDay);
     db.collection('cards').insertOne(whatToAdd , (err, result) => {
         if(err){
-            res.json(err)
+            console.log(err);
+            return res.json({"result" : {"n" : 0}});
         }
-        //console.log(whatToAdd);
         var answer ={'result' : result , 'id' :  whatToAdd._id};
-        // result['id'] = whatToAdd._id;
-        // console.log(result.id);
         res.json(answer);
     })
 })
-//Get card by login and date
-router.get('/card' , (req , res) => {
-    var whatToGet = {'login' : req.body.login , 'date' : new Date(req.body.date)}
-    db.collection('cards').findOne(whatToGet , (err , result) => {
-        if(err){
-            res.json(err)
-        }
-        res.json(result);
-    })
-})
-// Update function by login and date. WARNING : Full replace ALL fields of component
-router.put('/card' , (req , res) => {
-    var newInfo = req.body      // Такое себе.
-    newInfo.date = new Date(req.body.date);
-    var key = {'login' : newInfo.login , 'date' : newInfo.date}
-    db.collection('cards').updateOne(key , newInfo, (err , result) => {
-        if(err){
-            res.json(err)
-        }
-        res.json(result);
-    })
-})
 
-// Remove card for this date and login
-router.delete('/card' , (req , res) => {
-    var login = req.body.login;
-    var date = new Date(req.body.date);
-    var whatToRemove = {'login' : login , 'date' : date};
-    db.collection('cards').deleteOne(whatToRemove , function(err , result){
-        if(err){ 
-            res.json(err);
-        }    
-        // res.setHeader('Access-Control-Allow-Origin','*') 
-        res.json(result);
-    });
-})
-
-//----------------------------------------------------------------------
-
-//Get card by id
-router.get('/card/:id' , (req , res) => {
-    var idForGet = ObjectID(req.params.id);
-    db.collection('cards').findOne({_id : idForGet} , (err , result) => {
-        if(err){
-            res.json(err)
-        }
-        res.json(result);
-    })
-})
 // Update card by id
 router.put('/card/:id' , (req , res) => {
     var newInfo = req.body;      // Такое себе.
@@ -115,9 +64,10 @@ router.put('/card/:id' , (req , res) => {
     // console.log(' NEW INFO ' + newInfo);
     db.collection('cards').updateOne({_id : ObjectID(req.params.id)} , newInfo, (err , result) => {
         if(err){
-            res.json(err)
+            console.log(err);
+            return res.json({"n" : 0});
         }
-        res.json(result);
+        return res.json(result);
     })
 })
 
@@ -125,10 +75,10 @@ router.put('/card/:id' , (req , res) => {
 router.delete('/card/:id' , (req , res) => {
     db.collection('cards').deleteOne({_id : ObjectID(req.params.id)} , (err , result) => {
         if(err){
-            res.json(err)
+            console.log(err);
+            return res.json({"n" : 0});
         }
-        // res.setHeader('Access-Control-Allow-Origin','*') 
-        res.json(result)
+        return res.json(result)
     })
 })
 
@@ -136,7 +86,8 @@ router.post('/login' , (req, res) => {
     var authInfo = req.body;
     db.collection('usersHash').findOne(authInfo , (err , result) => {
         if(err){
-            res.json(err)
+            console.log(err);
+            res.json(err);
         }
         var answer = {'success' : (result !== null &&  result.username !== '') ? true : false}  //  Если такой пользователь есть то успех
         if(answer.success){
@@ -151,9 +102,10 @@ router.post('/register' , (req , res) => {
     var userToAdd = {'authHash' : req.body.authHash , 'username' : req.body.username};
     db.collection('usersHash').insertOne(userToAdd , (err , result) => {
         if(err){
-            res.json(err)
+            console.log(err);
         }
-        if(result === null){
+        console.log(result);
+        if(result === null || err){
             res.json({'success' : false});
         }
         else {
@@ -161,4 +113,55 @@ router.post('/register' , (req , res) => {
         }
     })
 })
+
+/*
+//Get card by id USELESS 
+router.get('/card/:id' , (req , res) => {
+    var idForGet = ObjectID(req.params.id);
+    db.collection('cards').findOne({_id : idForGet} , (err , result) => {
+        if(err){
+            res.json(err)
+        }
+        res.json(result);
+    })
+})
+
+//Get card by login and date DEPRECATED
+router.get('/card' , (req , res) => {
+    var whatToGet = {'login' : req.body.login , 'date' : new Date(req.body.date)}
+    db.collection('cards').findOne(whatToGet , (err , result) => {
+        if(err){
+            return res.json(err)
+        }
+        res.json(result);
+    })
+})
+// Update function by login and date. WARNING : Full replace ALL fields of component DEPRECATED
+router.put('/card' , (req , res) => {
+    var newInfo = req.body      // Такое себе.
+    newInfo.date = new Date(req.body.date);
+    var key = {'login' : newInfo.login , 'date' : newInfo.date}
+    db.collection('cards').updateOne(key , newInfo, (err , result) => {
+        if(err){
+
+            return res.json(err)
+        }
+        res.json(result);
+    })
+})
+
+// Remove card for this date and login DEPRECATED
+router.delete('/card' , (req , res) => {
+    var login = req.body.login;
+    var date = new Date(req.body.date);
+    var whatToRemove = {'login' : login , 'date' : date};
+    db.collection('cards').deleteOne(whatToRemove , function(err , result){
+        if(err){ 
+            console.log(err);
+            return res.json({"n" : 0});
+        }    
+        // res.setHeader('Access-Control-Allow-Origin','*') 
+        res.json(result);
+    });
+})*/
 module.exports = router;
