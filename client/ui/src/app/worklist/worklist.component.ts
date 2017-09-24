@@ -79,16 +79,19 @@ export class WorklistComponent implements OnInit {
     }
 
     updateConfigs() {                                                 // update configs of elements in the grid
+      console.log('UpdateConfigs: ' + this.cards.length);
       this.configs = [];
       for (let i = 0; i < this.cards.length; i++) {
         this.configs.push(this.generateItemConfig(i));
       }
+      console.log('Last:');
       this.addConfig = this.generateItemConfig(this.cards.length);
     }
 
     generateItemConfig(element: number): NgGridItemConfig {           // generate config for the element
-      const column = (element % this.tableConfig.max_cols) + 1;
-      const row = ((element - column) / this.tableConfig.max_cols) + 1;
+      const column = Math.ceil(element % this.tableConfig.max_cols) + 1;
+      const row = Math.ceil((element - column) / this.tableConfig.max_cols) + 1;
+      console.log(row, column);
       return {
           'col': column,
           'row': row,
@@ -140,7 +143,8 @@ export class WorklistComponent implements OnInit {
       this.worklistService.deleteCard(this.cards[index]._id).subscribe(data => {
         if (data.n === 1) {
           this.cards.splice(index , 1);
-          this.updateConfigs();
+          // this.updateConfigs();
+          this.updateList(this.login);
         }
       });
     }
@@ -185,7 +189,8 @@ export class WorklistComponent implements OnInit {
         if (data.result.n === 1) {
           this.cardForPopUp._id = data.id;
           this.cards.push(this.cardForPopUp);
-          this.updateConfigs();
+          // this.updateConfigs();
+          this.updateList(this.login);
         }
       });
     }
